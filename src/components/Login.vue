@@ -6,16 +6,20 @@
         <img src="@/assets/logo.png" alt />
       </div>
       <!-- 表单 -->
-      <el-form class="login_form" :model="loginForm">
-        <el-form-item>
+      <el-form class="login_form" :model="loginForm" :rules="loginFormRules" ref="loginFormRef">
+        <el-form-item prop="username">
           <el-input v-model="loginForm.username" prefix-icon="iconfont icon-user"></el-input>
         </el-form-item>
-         <el-form-item>
-          <el-input v-model="loginForm.password" prefix-icon="iconfont icon-3702mima" type="password"></el-input>
+        <el-form-item prop="password">
+          <el-input
+            v-model="loginForm.password"
+            prefix-icon="iconfont icon-3702mima"
+            type="password"
+          ></el-input>
         </el-form-item>
         <el-form-item class="btns">
-            <el-button type="primary">登录</el-button>
-            <el-button type="info">重置</el-button>
+          <el-button type="primary" @click="login">登录</el-button>
+          <el-button type="info" @click="reset">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -24,15 +28,47 @@
 
 <script>
 export default {
-    data(){
-        return{
-            // 登录表单的数据绑定对象
-            loginForm:{
-                username:'',
-                password:''
-            }
-        }
+  data() {
+    return {
+      // 登录表单的数据绑定对象
+      loginForm: {
+        username: "admin",
+        password: "123456"
+      },
+      // 表单验证规则
+      loginFormRules: {
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          { min: 3, max: 10, message: "长度在 3 到 10 个字符", trigger: "blur" }
+        ],
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { min: 6, max: 15, message: "长度在 6 到 1 5个字符", trigger: "blur" }
+        ]
+      }
+    };
+  },
+  methods: {
+    // 重置表单
+    reset() {
+      this.$refs.loginFormRef.resetFields();
+    },
+    // 验证表单
+    login() {
+      this.$refs.loginFormRef.validate(async valid => {
+        if (!valid) return;
+        let { data: res } = await this.$axios.post("login", this.loginForm); //解构赋值
+        console.log(res);
+        // console.log(this)
+        if (res.meta.status !== 200) return this.$message.error("登录失败");
+        this.$message.success("登录成功");
+        //保存token到sessionStorage
+        sessionStorage.setItem('token',res.data.token)
+        //页面跳转
+        this.$router.push({path:'/home'})
+      });
     }
+  }
 };
 </script>
 
@@ -68,16 +104,16 @@ export default {
       background-color: #eee;
     }
   }
-  .login_form{
-      width: 100%;
-      padding:0 20px;
-      position:absolute;
-      bottom:0;
-      box-sizing: border-box;
+  .login_form {
+    width: 100%;
+    padding: 0 20px;
+    position: absolute;
+    bottom: 0;
+    box-sizing: border-box;
   }
-  .btns{
-      display: flex;
-      justify-content: flex-end;
+  .btns {
+    display: flex;
+    justify-content: flex-end;
   }
 }
 </style>
