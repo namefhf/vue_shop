@@ -15,15 +15,23 @@ const routes = [
   {
     path: '/home',
     component: () => import('@/components/Home'),
-    redirect:'/welcome',
+    redirect: '/welcome',
     children: [
       {
         path: '/welcome',
         component: () => import('@/components/Welcome')
       },
       {
-        path:'/users',
-        component:()=>import('@/components/user/Users')
+        path: '/users',
+        component: () => import('@/components/user/Users')
+      },
+      {
+        path: '/rights',
+        component: () => import('@/components/power/Rights')
+      },
+      {
+        path: '/roles',
+        component: () => import('@/components/power/Roles')
       }
     ]
   }

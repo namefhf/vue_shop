@@ -64,7 +64,7 @@ export default {
   },
   created() {
     this.getMenuList();
-    this.activePath = sessionStorage.getItem('activePath')
+    this.activePath = sessionStorage.getItem("activePath");
   },
   methods: {
     logout() {
@@ -83,7 +83,7 @@ export default {
     // 保存激活的二级菜单
     saveState(activePath) {
       sessionStorage.setItem("activePath", activePath);
-      this.activePath = activePath
+      this.activePath = activePath;
     }
   }
 };
