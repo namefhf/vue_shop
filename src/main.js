@@ -16,6 +16,29 @@ axios.interceptors.request.use(config => {
   return config
 })
 Vue.component('tree-table',TreeTable)
+// Vue.filter('dateFormat',(originval)=>{
+//   const date = new Date(originval)
+//   const y = date.getFullYear()
+//   const m = (date.getMonth()+1+'').padStart(2,'0')
+//   const d = (date.getDate()+'').padStart(2,'0')
+//   const hh = (date.getHours()+'').padStart(2,'0')
+//   const mm = (date.getMinutes()+'').padStart(2,'0')
+//   const ss = (date.getSeconds()+'').padStart(2,'0')
+//   return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+// })
+Vue.filter('dateFormat', function(originVal) {
+  const dt = new Date(originVal)
+
+  const y = dt.getFullYear()
+  const m = (dt.getMonth() + 1 + '').padStart(2, '0')
+  const d = (dt.getDate() + '').padStart(2, '0')
+
+  const hh = (dt.getHours() + '').padStart(2, '0')
+  const mm = (dt.getMinutes() + '').padStart(2, '0')
+  const ss = (dt.getSeconds() + '').padStart(2, '0')
+
+  return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+})
 Vue.prototype.$axios = axios
 new Vue({
   router,
