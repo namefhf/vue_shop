@@ -9,12 +9,12 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="8">
-          <el-input placeholder="请输入内容">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable @clear="getGoodsList">
+            <el-button slot="append" icon="el-icon-search" @click="getGoodsList"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary">添加商品</el-button>
+          <el-button type="primary" @click="goAddPage">添加商品</el-button>
         </el-col>
       </el-row>
       <el-table :data="goodsList" border stripe>
@@ -25,22 +25,18 @@
         <el-table-column label="创建时间" prop="add_time" width="140px">
           <template slot-scope="scope">{{scope.row.add_time|dateFormat}}</template>
         </el-table-column>
-        <el-table-column label="操作" width="180px">
+        <el-table-column label="操作" width="160px">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
+            <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+              @click="removeById(scope.row.goods_id)"
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
-      <!-- <el-pagination
-        :total="total"
-        :current-page="queryInfo.pagenum"
-        :page-size="queryInfo.pagesize"
-        page-sizes="[10, 20, 30, 40]"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        layout="total, sizes, prev, pager, next, jumper"
-      ></el-pagination> -->
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -76,7 +72,7 @@ export default {
       const { data: res } = await this.$axios.get("goods", {
         params: this.queryInfo
       });
-      console.log(res);
+      // console.log(res);
       if (res.meta.status != 200) {
         this.$message.error("获取商品列表失败");
         return;
@@ -85,13 +81,45 @@ export default {
       this.total = res.data.total;
     },
     handleSizeChange(newSize) {
-      this.queryInfo.pagesize = newSize
-      this.getGoodsList()
+      this.queryInfo.pagesize = newSize;
+      this.getGoodsList();
     },
     handleCurrentChange(newPage) {
-      this.queryInfo.pagenum = newPage
-      this.getGoodsList()
+      this.queryInfo.pagenum = newPage;
+      this.getGoodsList();
     },
+    removeById(id) {
+      this.$confirm("此操作将永久删除, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          const { data: res } = await this.$axios.delete(`goods/${id}`);
+          console.log(res)
+          if (res.meta.status === 200) {
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+            this.getGoodsList()
+          }else{
+            this.$message({
+              type: "error",
+              message: "删除失败!"
+            })
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
+    goAddPage(){
+      this.$router.push('/goods/add')
+    }
   }
 };
 </script>
