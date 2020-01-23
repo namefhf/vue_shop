@@ -10,6 +10,8 @@ import VueQuillEditor from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
+import '@/plugins/timeline/timeline.css';
+import '@/plugins/timeline-item/timeline-item.css';
 Vue.use(VueQuillEditor)
 Vue.config.productionTip = false
 // 配置请求的根路径
